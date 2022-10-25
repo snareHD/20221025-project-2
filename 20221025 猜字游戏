@@ -1,0 +1,41 @@
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<stdio.h>
+#include<stdlib.h>
+void begain()
+{
+	printf("*************************************\n");
+	printf("********1.开始游戏 0.退出游戏********\n");
+	printf("*************************************\n");
+	printf(">>请输入：");
+
+}
+void game()
+{
+	int c = 0;
+	c = rand();
+	printf("%d\n", c);
+}
+
+int main()
+{
+	int a = 0;
+	do 
+	{
+		begain();
+		scanf("%d", &a);
+		printf(">>请输入：");
+		int b;
+		scanf("%d", &b);
+		switch (b)
+		{
+		case 0:
+			a = b;
+			break;
+		default:
+			game();
+			break;
+		}
+
+	} while (a);
+	return 0;
+}
