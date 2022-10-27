@@ -1,6 +1,9 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 #include<stdio.h>
 #include<stdlib.h>
+#include <time.h>
+
+int b;
 void begain()
 {
 	printf("*************************************\n");
@@ -9,22 +12,49 @@ void begain()
 	printf(">>请输入：");
 
 }
-void game()
+void game(int c)
 {
-	int c = 0;
-	c = rand();
+
+
 	printf("%d\n", c);
+	if (b > c)
+	{
+		printf("猜测数值过大\n");
+		printf("请重新输入：");
+		scanf("%d", &b);
+		game(c);
+	}
+	else if (b < c)
+	{
+		printf("猜测数值过小\n");
+		printf("请重新输入：");
+		scanf("%d", &b);
+		game(c);
+	}
+	else 
+	{
+		printf("数值正确\n");
+		
+	}
 }
 
 int main()
 {
+	srand((unsigned)time(NULL));
 	int a = 0;
 	do 
 	{
 		begain();
 		scanf("%d", &a);
-		printf(">>请输入：");
-		int b;
+
+		if (a == 0)
+		{
+			break;
+
+		}
+		printf("已开始游戏>>请输入：");
+		
+		
 		scanf("%d", &b);
 		switch (b)
 		{
@@ -32,9 +62,12 @@ int main()
 			a = b;
 			break;
 		default:
-			game();
+			game(rand());
+			//game(rand()%100+1);随机生成1~100之间的值
+
 			break;
 		}
+		break;
 
 	} while (a);
 	return 0;
