@@ -1,0 +1,201 @@
+//该项目包含三个文件
+//第一个文件：头文件  game.h     --函数的声明
+#define  _CRT_SECURE_NO_WARNINGS 1
+#define ROW 9
+#define COL 9
+#define ROWS ROW+2
+#define COLS COL+2
+#define easy_count 10    //布置雷的数量
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+
+void initboard(char board[ROWS][COLS], int rows, int cols,int set);
+void displayboard(char board[ROWS][COLS], int row,int col);
+void setmine(char board[ROWS][COLS],int row,int col);
+void findboard(char arrangement[ROWS][COLS], char show[ROWS][COLS], int row,int col);
+
+
+
+
+
+
+//第二个文件：源文件  game.c    --函数的定义
+#define  _CRT_SECURE_NO_WARNINGS 1
+#include"game.h"
+void initboard(char board[ROWS][COLS], int rows, int cols,int set) //初始化棋盘
+{
+	int a = 0;
+	int b = 0;
+	for ( a = 0; a < rows; a++)
+	{
+		for ( b = 0; b < cols; b++)
+		{
+			board[a][b] = set;
+		}
+	}
+}
+
+
+void displayboard(char board[ROWS][COLS], int row, int col)   //打印棋盘
+
+{
+	int a = 0;
+	int b = 0;
+	for (a = 0; a <= row; a++)
+	{
+		printf("%d ", a);
+	}
+	printf("\n");
+
+
+	for ( a = 1; a <= row; a++)
+	{
+		printf("%d ", a);
+
+		for (b = 1; b <= col; b++)
+		{
+			printf("%c ", board[a][b]);
+		}
+		printf("\n");
+	}
+}
+
+
+void setmine(char board[ROWS][COLS], int row, int col)  //布置雷
+{
+	
+	int count = easy_count;   //布置雷的数量
+
+	while (count)
+	{
+		int a = rand() % row + 1;
+		int b = rand() % col + 1;//这两个随机生成素必须放在循环内部--很重要
+		if (board[a][b] == '0')
+		{
+			board[a][b] = '1';
+			count--;
+		}
+		
+	}
+}
+
+int get_mine_count(char ment[ROW][COLS], int x, int y)
+{
+	//'1'-'0'=1
+	//'3'-'0'=3
+
+	return ment[x - 1][y] +
+		ment[x - 1][y - 1] +
+		ment[x][y - 1] +
+		ment[x + 1][y - 1] +
+		ment[x + 1][y] +
+		ment[x + 1][y + 1] +
+		ment[x][y + 1] +
+		ment[x - 1][y + 1] - 8 * '0';
+		
+}
+
+
+void findboard(char arrangement[ROWS][COLS], char show[ROWS][COLS], int row, int col)
+{
+	int a = 0;
+	int b = 0;
+	int win = 0;
+	while (win < ROW * COL - easy_count)
+	{
+		
+			printf("请输入坐标》");
+			scanf("%d%d", &a, &b);
+			if (a >= 1 && a <= row && b >= 1 && b <= col)
+			{
+				if (arrangement[a][b] == '1')
+				{
+					printf("此处有雷，游戏结束\n");
+					displayboard(arrangement, row, col);
+					break;
+				}
+				else
+				{
+					int count = get_mine_count(arrangement, a, b);
+					show[a][b] = count + '0';//将count 转换成字符格式，因为'1'-'0'=1
+					displayboard(show, row, col);
+					win++;
+				}
+			}
+			else
+			{
+				printf("输入坐标有误,请重新输入");
+			}
+	}
+	if (win == ROW * COL - easy_count)
+	{
+		printf("恭喜你排雷成功\n");
+		displayboard(arrangement, row, col);
+
+	}
+}
+
+
+
+
+//第三个文件：源文件  test.c   
+#define  _CRT_SECURE_NO_WARNINGS 1
+
+#include"game.h"
+void menu()
+{
+	printf("**************************\n");
+	printf("******** 1.开始游戏 ******\n");
+	printf("******** 0.结束游戏 ******\n");
+	printf("**************************\n");
+}
+void game()
+{
+	
+	char arrangement[ROWS][COLS] = { 0 };  //放置一个 11*11 的棋盘格子  //内部--存放炸弹
+	char show[ROWS][COLS] = { 0 };  //外部--感应并显示周围炸弹数量
+    initboard(arrangement, ROWS, COLS,'0');//初始化内棋盘
+    initboard(show, ROWS, COLS,'*');//初始化外棋盘
+	//displayboard(arrangement, ROW, COL); //打印内棋盘
+	displayboard(show, ROW, COL);//打印外棋盘
+	setmine(arrangement, ROW, COL);//布置雷
+	displayboard(arrangement, ROW, COL);//打印内棋盘
+	findboard(arrangement, show, ROW, COL);//扫雷
+
+}
+
+
+void test()
+{
+	int input = 0;
+	srand((int)time(NULL));
+	do
+	{
+		menu();
+		printf("请输入》");
+		scanf("%d", &input);
+		switch (input)
+		{
+		case 1:
+			game();
+			break;
+		case 0:
+			printf("游戏已结束\n");
+			break;
+		default:
+			printf("输入错误，请重新输入\n");
+			break;
+		}
+	
+	} while (input);
+}
+
+
+
+int main()
+{
+	
+	test();
+}
